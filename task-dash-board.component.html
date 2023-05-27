@@ -1,0 +1,453 @@
+<style>
+    .icon {
+        animation: up-down 1s ease-in-out infinite;
+    }
+
+    @keyframes up-down {
+        0% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-5px);
+        }
+
+        100% {
+            transform: translateY(0);
+        }
+    }
+</style>
+<!-- <div class="example-button-row align-right">
+    <div class="col-md-5 text-left">
+        <h4>Project Name : <span style="color: rgb(190, 64, 64);">{{projectName}}</span></h4>
+    </div>
+    <div class="col-md-6 text-right">
+        <h4>Project ID : <span style="color: rgb(190, 64, 64);">{{projectID}}</span></h4>
+    </div>
+    <div class="example-button-container">
+        <button (click)="createTask()" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top"
+            title="Create Task">
+            <mat-icon><i class="fa fa-plus"></i></mat-icon>
+        </button>
+    </div>
+
+    <div class="example-button-container">
+        <button class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Deleted Tasks">
+            <mat-icon><i class="fa fa-trash"></i></mat-icon>
+        </button>
+    </div>
+
+
+</div> -->
+
+
+   
+      <button (click)="viewProject()" mat-icon-button color="primary" class="back-button" style="float: right;">
+        <span class="material-symbols-outlined">
+            add_circle
+            </span>
+      </button>
+   
+  
+      <button (click)="createTask()" mat-icon-button color="primary" class="back-button" style="float: right;">
+        <mat-icon>desktop_windows</mat-icon>
+      </button>
+   
+
+  
+  
+  
+
+  
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div cdkDropListGroup>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="example-container">
+                            <h2 class="head-title">TO DO <span *ngIf="task.length > 0"> - {{task.length}}</span></h2>
+                            <div cdkDropList [cdkDropListData]="task" class="example-list"
+                                (cdkDropListDropped)="drop($event)">
+                                <div class="example-box" *ngFor="let item of task; let i=index" cdkDrag>
+                                    <mat-card style="width: 325px; height: 218px;" class="example-card">
+                                        <mat-card-header>
+                                            <mat-card-title
+                                                style="color: rgb(83, 127, 7);">{{item.taskName}}</mat-card-title>
+
+                                                <div class="assign-icon-container">
+                                                    <!-- Add your icon here -->
+                                                    <mat-icon>assignment_ind</mat-icon>
+                                                  </div>
+
+                                        </mat-card-header>
+                                        <span *ngIf="item.taskCreatedBY!=loginEmployeeEmail"
+                                            style="color: rgb(40, 95, 150); margin-left: 35px;"><b>Assign By :
+                                                {{item.taskCreatedBY}}</b>
+                                        </span>
+                                        <mat-card-content style="margin-top: 20px; display: flex; justify-content: space-between;">
+                                            <p>
+                                                <mat-chip color="accent">
+                                                    <span style="color: rgb(23, 153, 11);"><b>Task Created:-
+                                                            {{item.taskCreatedDate}}</b></span>
+                                                </mat-chip>
+                                                <mat-chip color="accent" style="margin-top: 10px;">
+                                                    <span style="color: red;">Task End Date:-
+                                                        {{item.taskEndDate}}</span>
+                                                </mat-chip>
+                                            </p>
+                                            <div class="icon-blink-container">
+                                                <i class="fa fa-angle-double-down icon"></i>
+                                                <div class="blink-animation">Hover me</div>
+                                            </div>
+                                        </mat-card-content>
+                                        <!-- <i class="fa fa-angle-double-down icon" style="margin-left:240px;float:right;font-size:36px;color:red"></i>
+                                        <div class="blink-animation" style="margin-left:230px; font-family: cursive;">
+                                            Hover me
+                                        </div> -->
+
+                                        <!-- <mat-divider style="margin-top: 20px; border-color: black;"></mat-divider> -->
+                                        <mat-card-footer class="card-footer">
+                                            <mat-card-actions class="myAlignment">
+                                                <mat-chip-listbox aria-label="Dog selection">
+                                                    <ng-container *ngIf="item.taskPriority === 'High'">
+                                                        <mat-chip color="accent">
+                                                            <div class="" data-bs-toggle="tooltip"
+                                                                data-bs-placement="top" title="High Priority">
+                                                                <i class="fa fa-flag-o"
+                                                                    style="font-size:18px;color:red">
+                                                                </i>
+                                                            </div>
+                                                        </mat-chip>
+                                                        <!-- Add your high priority logic here -->
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.taskPriority === 'Medium'">
+                                                        <mat-chip color="accent">
+                                                            <div class="" data-bs-toggle="tooltip"
+                                                                data-bs-placement="top" title="Medium Priority">
+                                                                <i class="fa fa-flag-o"
+                                                                    style="font-size:18px;color:rgb(214, 216, 52)"></i>
+                                                            </div>
+                                                        </mat-chip>
+                                                        <!-- Add your medium priority logic here -->
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.taskPriority === 'Low'">
+                                                        <mat-chip color="accent">
+                                                            <div class="" data-bs-toggle="tooltip"
+                                                                data-bs-placement="top" title="Low Priority">
+                                                                <i class="fa fa-flag-o"
+                                                                    style="font-size:18px;color:rgb(54, 40, 211)">
+                                                                </i>
+                                                            </div>
+                                                        </mat-chip>
+                                                        <!-- Add your low priority logic here -->
+                                                    </ng-container>
+                                                </mat-chip-listbox>
+                                                <button mat-button (click)="viewTask(item)"><i
+                                                        class="fa fa-eye"></i></button>
+                                                <button *ngIf="item.taskCreatedBY==loginEmployeeEmail" mat-button
+                                                    (click)="AssignTask(item.taskID)"><i class="fa fa-tasks"
+                                                        aria-hidden="true"></i></button>
+                                                <button *ngIf="item.taskCreatedBY==loginEmployeeEmail" mat-button
+                                                    (click)="deleteByTaskId(item.taskID)"> <i class="fa fa-trash"
+                                                        aria-hidden="true"></i> </button>
+                                            </mat-card-actions>
+                                        </mat-card-footer>
+                                    </mat-card>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <!-- inprogress -->
+                        <div class="example-container">
+                            <h2 class="head-title">InProgress <span *ngIf="inprogress.length>0"> -
+                                    {{inprogress.length}}</span></h2>
+                            <div cdkDropList [cdkDropListData]="inprogress" class="example-list"
+                                (cdkDropListDropped)="drop($event)">
+                                <div class="example-box" *ngFor="let item of inprogress; let i = index" cdkDrag>
+                                    <!-- {{item.description}}
+                                    <button mat-icon-button color="warn"
+                                        (click)="deleteInProgressTask(i)"><mat-icon>delete</mat-icon></button> -->
+
+
+                                    <mat-card style="width: 325px; height: 218px;" class="example-card">
+                                        <mat-card-header>
+                                            <mat-card-title
+                                                style="color: rgb(83, 127, 7);">{{item.taskName}}</mat-card-title>
+                                               
+                                                <div class="assign-icon-container">
+                                                    <!-- Add your icon here -->
+                                                    <mat-icon>assignment_ind</mat-icon>
+                                                  </div>
+
+                                        </mat-card-header>
+                                        <span *ngIf="item.taskCreatedBY!=loginEmployeeEmail"
+                                            style="color: rgb(40, 95, 150); margin-left: 35px;"><b>Assign By :
+                                                {{item.taskCreatedBY}}</b>
+                                        </span>
+                                        <mat-card-content style="margin-top: 20px; display: flex; justify-content: space-between;">
+                                            <p>
+                                                <mat-chip color="accent">
+                                                    <span style="color: rgb(23, 153, 11);"><b>Task Created:-
+                                                            {{item.taskCreatedDate}}</b></span>
+                                                </mat-chip>
+                                                <mat-chip color="accent" style="margin-top: 10px;">
+                                                    <span style="color: red;">Task End Date:-
+                                                        {{item.taskEndDate}}</span>
+                                                </mat-chip>
+                                            </p>
+                                            <div class="icon-blink-container">
+                                                <i class="fa fa-angle-double-down icon"></i>
+                                                <div class="blink-animation">Hover me</div>
+                                            </div>
+                                        </mat-card-content>
+
+                                        <mat-card-footer class="card-footer">
+                                            <mat-card-actions class="myAlignment">
+                                                <mat-chip-listbox aria-label="Dog selection">
+                                                    <ng-container *ngIf="item.taskPriority === 'High'">
+                                                        <mat-chip color="accent">
+                                                            <div class="" data-bs-toggle="tooltip"
+                                                                data-bs-placement="top" title="High Priority">
+                                                                <i class="fa fa-flag-o"
+                                                                    style="font-size:18px;color:red">
+                                                                </i>
+                                                            </div>
+                                                        </mat-chip>
+                                                        <!-- Add your high priority logic here -->
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.taskPriority === 'Medium'">
+                                                        <mat-chip color="accent">
+                                                            <div class="" data-bs-toggle="tooltip"
+                                                                data-bs-placement="top" title="Medium Priority">
+                                                                <i class="fa fa-flag-o"
+                                                                    style="font-size:18px;color:rgb(214, 216, 52)"></i>
+                                                            </div>
+                                                        </mat-chip>
+                                                        <!-- Add your medium priority logic here -->
+                                                    </ng-container>
+                                                    <ng-container *ngIf="item.taskPriority === 'Low'">
+                                                        <mat-chip color="accent">
+                                                            <div class="" data-bs-toggle="tooltip"
+                                                                data-bs-placement="top" title="Low Priority">
+                                                                <i class="fa fa-flag-o"
+                                                                    style="font-size:18px;color:rgb(54, 40, 211)">
+                                                                </i>
+                                                            </div>
+                                                        </mat-chip>
+                                                        <!-- Add your low priority logic here -->
+                                                    </ng-container>
+                                                </mat-chip-listbox>
+                                                <button mat-button (click)="viewTask(item)"><i
+                                                        class="fa fa-eye"></i></button>
+                                                <button *ngIf="item.taskCreatedBY==loginEmployeeEmail" mat-button
+                                                    (click)="AssignTask(item.taskID)"><i class="fa fa-tasks"
+                                                        aria-hidden="true"></i></button>
+                                                <button *ngIf="item.taskCreatedBY==loginEmployeeEmail" mat-button
+                                                    (click)="deleteByTaskId(item.taskID)"> <i class="fa fa-trash"
+                                                        aria-hidden="true"></i> </button> </mat-card-actions>
+                                        </mat-card-footer>
+                                    </mat-card>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <!-- Review -->
+                        <div class="example-container">
+                            <h2 class="head-title">Review <span *ngIf="review.length>0"> - {{review.length}}</span></h2>
+                            <div cdkDropList [cdkDropListData]="review" class="example-list"
+                                (cdkDropListDropped)="drop($event)">
+                                <div class="example-box" *ngFor="let item of review; let i = index;" cdkDrag>
+                                    <!-- {{item.description}} -->
+                                    <div class="box">
+                                        <!-- <button mat-icon-button color="warn"
+                                            (click)="deleteDoneTask(i)"><mat-icon>delete</mat-icon></button>
+                                        <button mat-icon-button
+                                            color="primary"><mat-icon>check_circle</mat-icon></button> -->
+
+
+                                        <mat-card style="width: 315px; height: 218px;" class="example-card">
+                                            <mat-card-header>
+                                                <mat-card-title
+                                                    style="color: rgb(83, 127, 7);">{{item.taskName}}</mat-card-title>
+
+                                                    <div class="assign-icon-container">
+                                                        <!-- Add your icon here -->
+                                                        <mat-icon>assignment_ind</mat-icon>
+                                                      </div>
+
+                                            </mat-card-header>
+                                            <span *ngIf="item.taskCreatedBY!=loginEmployeeEmail"
+                                                style="color: rgb(40, 95, 150); margin-left: 35px;"><b>Assign By :
+                                                    {{item.taskCreatedBY}}</b>
+                                            </span>
+                                            <mat-card-content style="margin-top: 20px; display: flex; justify-content: space-between;">
+                                                <p>
+                                                    <mat-chip color="accent">
+                                                        <span style="color: rgb(23, 153, 11);"><b>Task Created:-
+                                                                {{item.taskCreatedDate}}</b></span>
+                                                    </mat-chip>
+                                                    <mat-chip color="accent" style="margin-top: 10px;">
+                                                        <span style="color: red;">Task End Date:-
+                                                            {{item.taskEndDate}}</span>
+                                                    </mat-chip>
+                                                </p>
+                                                <div class="icon-blink-container">
+                                                    <i class="fa fa-angle-double-down icon"></i>
+                                                    <div class="blink-animation">Hover me</div>
+                                                </div>
+                                            </mat-card-content>
+
+                                            <mat-card-footer class="card-footer">
+                                                <mat-card-actions class="myAlignment">
+                                                    <mat-chip-listbox aria-label="Dog selection">
+                                                        <ng-container *ngIf="item.taskPriority === 'High'">
+                                                            <mat-chip color="accent">
+                                                                <div class="" data-bs-toggle="tooltip"
+                                                                    data-bs-placement="top" title="High Priority">
+                                                                    <i class="fa fa-flag-o"
+                                                                        style="font-size:18px;color:red">
+                                                                    </i>
+                                                                </div>
+                                                            </mat-chip>
+                                                            <!-- Add your high priority logic here -->
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.taskPriority === 'Medium'">
+                                                            <mat-chip color="accent">
+                                                                <div class="" data-bs-toggle="tooltip"
+                                                                    data-bs-placement="top" title="Medium Priority">
+                                                                    <i class="fa fa-flag-o"
+                                                                        style="font-size:18px;color:rgb(214, 216, 52)"></i>
+                                                                </div>
+                                                            </mat-chip>
+                                                            <!-- Add your medium priority logic here -->
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.taskPriority === 'Low'">
+                                                            <mat-chip color="accent">
+                                                                <div class="" data-bs-toggle="tooltip"
+                                                                    data-bs-placement="top" title="Low Priority">
+                                                                    <i class="fa fa-flag-o"
+                                                                        style="font-size:18px;color:rgb(54, 40, 211)">
+                                                                    </i>
+                                                                </div>
+                                                            </mat-chip>
+                                                            <!-- Add your low priority logic here -->
+                                                        </ng-container>
+                                                    </mat-chip-listbox>
+                                                    <button mat-button (click)="viewTask(item)"><i
+                                                            class="fa fa-eye"></i></button>
+                                                    <button *ngIf="item.taskCreatedBY==loginEmployeeEmail" mat-button
+                                                        (click)="AssignTask(item.taskID)"><i class="fa fa-tasks"
+                                                            aria-hidden="true"></i></button>
+                                                    <button *ngIf="item.taskCreatedBY==loginEmployeeEmail" mat-button
+                                                        (click)="deleteByTaskId(item.taskID)"> <i class="fa fa-trash"
+                                                            aria-hidden="true"></i> </button> </mat-card-actions>
+                                            </mat-card-footer>
+                                        </mat-card>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <!-- done -->
+                        <div class="example-container">
+                            <h2 class="head-title">Completed <span *ngIf="done.length>0"> - {{done.length}}</span></h2>
+                            <div cdkDropList [cdkDropListData]="done" class="example-list"
+                                (cdkDropListDropped)="drop($event)">
+                                <div class="example-box" *ngFor="let item of done; let i = index;" cdkDrag>
+
+                                    <div class="box">
+                                        <mat-card style="width: 315px; height: 218px;" class="example-card">
+                                            <mat-card-header>
+                                                <mat-card-title
+                                                    style="color: rgb(83, 127, 7);">Title : {{item.taskName}}</mat-card-title>
+
+                                                    <div class="assign-icon-container">
+                                                        <!-- Add your icon here -->
+                                                        <mat-icon>assignment_ind</mat-icon>
+                                                      </div>
+                                                      
+                                            </mat-card-header>
+                                            <span *ngIf="item.taskCreatedBY!=loginEmployeeEmail"
+                                                style="color: rgb(40, 95, 150); margin-left: 35px;"><b>Assign By :
+                                                    {{item.taskCreatedBY}}</b>
+                                            </span>
+                                            <mat-card-content style="margin-top: 20px; display: flex; justify-content: space-between;">
+                                                <p>
+                                                    <mat-chip color="accent">
+                                                        <span style="color: rgb(23, 153, 11);"><b>Task Created:-
+                                                                {{item.taskCreatedDate}}</b></span>
+                                                    </mat-chip>
+                                                    <mat-chip color="accent" style="margin-top: 10px;">
+                                                        <span style="color: red;">Task End Date:-
+                                                            {{item.taskEndDate}}</span>
+                                                    </mat-chip>
+                                                </p>
+                                                <div class="icon-blink-container">
+                                                    <i class="fa fa-angle-double-down icon"></i>
+                                                    <div class="blink-animation">Hover me</div>
+                                                </div>
+                                            </mat-card-content>
+
+                                            <mat-card-footer class="card-footer">
+                                                <mat-card-actions class="myAlignment">
+                                                    <mat-chip-listbox aria-label="Dog selection">
+                                                        <ng-container *ngIf="item.taskPriority === 'High'">
+                                                            <mat-chip color="accent">
+                                                                <div class="" data-bs-toggle="tooltip"
+                                                                    data-bs-placement="top" title="High Priority">
+                                                                    <i class="fa fa-flag-o"
+                                                                        style="font-size:18px;color:red">
+                                                                    </i>
+                                                                </div>
+                                                            </mat-chip>
+                                                            <!-- Add your high priority logic here -->
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.taskPriority === 'Medium'">
+                                                            <mat-chip color="accent">
+                                                                <div class="" data-bs-toggle="tooltip"
+                                                                    data-bs-placement="top" title="Medium Priority">
+                                                                    <i class="fa fa-flag-o"
+                                                                        style="font-size:18px;color:rgb(214, 216, 52)"></i>
+                                                                </div>
+                                                            </mat-chip>
+                                                            <!-- Add your medium priority logic here -->
+                                                        </ng-container>
+                                                        <ng-container *ngIf="item.taskPriority === 'Low'">
+                                                            <mat-chip color="accent">
+                                                                <div class="" data-bs-toggle="tooltip"
+                                                                    data-bs-placement="top" title="Low Priority">
+                                                                    <i class="fa fa-flag-o"
+                                                                        style="font-size:18px;color:rgb(54, 40, 211)">
+                                                                    </i>
+                                                                </div>
+                                                            </mat-chip>
+                                                            <!-- Add your low priority logic here -->
+                                                        </ng-container>
+                                                    </mat-chip-listbox>
+                                                    <button mat-button (click)="viewTask(item)"><i
+                                                            class="fa fa-eye"></i></button>
+                                                    <button *ngIf="item.taskCreatedBY==loginEmployeeEmail" mat-button
+                                                        (click)="AssignTask(item.taskID)"><i class="fa fa-tasks"
+                                                            aria-hidden="true"></i></button>
+                                                    <button *ngIf="item.taskCreatedBY==loginEmployeeEmail" mat-button
+                                                        (click)="deleteByTaskId(item.taskID)"> <i class="fa fa-trash"
+                                                            aria-hidden="true"></i> </button> </mat-card-actions>
+                                            </mat-card-footer>
+                                        </mat-card>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
